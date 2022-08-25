@@ -8,7 +8,7 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
-from models import db, User, People, Planets, Fav_people
+from models import db, User, People, Planets, Fav_people, Fav_planets
 #from models import Person
 
 app = Flask(__name__)
@@ -85,6 +85,21 @@ def add_fav_people(people_id):
         return jsonify({"mensaje": "Todo salio bien"})
     else:
         return jsonify({"resultado": "personaje no existe"})
+
+@app.route("/favorite/planet/<int:planet_id>", methods=['POST'])
+def add_fav_planet(planet_id):
+    oneplanet = Planet.query.get(planet_id)
+    if oneplanet:
+        new = Fav_planet()
+        new.user_id = 1
+        new.planet_id = planet_id
+        db.session.add(new) #agrego el registro a la base de datos
+        db.session.commit() #guardar los cambios realizados
+
+        return jsonify({"mensaje": "Todo salio bien"})
+    else:
+        return jsonify({"resultado": "personaje no existe"})
+
 
 
 # this only runs if `$ python src/main.py` is executed
